@@ -2,6 +2,7 @@
 import scrapy
 import re
 from fang.items import NewHouseItem,ESFHouseItem
+# 普通改为分布式导入
 from scrapy_redis.spiders import RedisSpider
 
 class SfwSpider(RedisSpider):
@@ -9,7 +10,9 @@ class SfwSpider(RedisSpider):
     allowed_domains = ['fang.com']
     # 改成分布式
     # start_urls = ['https://www.fang.com/SoufunFamily.htm']
+    # 爬虫从fang:start_urls这个key值中读取开始的url
     redis_key = 'fang:start_urls'
+
 
     def parse(self, response):
         trs = response.xpath("//div[@class='outCont']//tr")

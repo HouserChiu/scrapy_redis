@@ -89,6 +89,10 @@ DOWNLOADER_MIDDLEWARES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
+
+# 改为分布式添加
+
+
 SCHEDULER = 'scrapy_redis.scheduler.Scheduler'
 
 DUPEFILTER_CLASS = 'scrapy_redis.dupefilter.RFPDupeFilter'
@@ -96,8 +100,8 @@ DUPEFILTER_CLASS = 'scrapy_redis.dupefilter.RFPDupeFilter'
 ITEM_PIPELINES = {
     'scrapy_redis.pipelines.RedisPipeline': 1
 }
-
+#爬虫中断后从中断处此处开始爬
 SCHEDULER_PERSIST = True
 
-REDIS_HOST = '192.168.1.10'
+REDIS_HOST = '你的主机host'
 REDIS_PORT = 6379
