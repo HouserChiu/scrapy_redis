@@ -7,6 +7,7 @@ from scrapy_redis.spiders import RedisSpider
 class SfwSpider(RedisSpider):
     name = 'sfw'
     allowed_domains = ['fang.com']
+    # 改成分布式
     # start_urls = ['https://www.fang.com/SoufunFamily.htm']
     redis_key = 'fang:start_urls'
 
@@ -15,6 +16,7 @@ class SfwSpider(RedisSpider):
         province = None
         for tr in trs:
             tds = tr.xpath(".//td[not(@class)]")
+            # 省份在第一个tds标签里
             province_td = tds[0]
             province_text = province_td.xpath(".//text()").get()
             province_text = re.sub(r'\s', '', province_text)
@@ -23,6 +25,7 @@ class SfwSpider(RedisSpider):
             #不爬取海外城市房源
             if province == '其它':
                 continue
+            # 城市在第二个tds标签里
             city_td = tds[1]
             city_links = city_td.xpath(".//a")
             for city_link in city_links:
@@ -39,8 +42,8 @@ class SfwSpider(RedisSpider):
                 # print('城市: %s%s' %(province,city))
                 # print('新房链接: %s' %(newhouse_url))
                 # print('二手房链接：%s' %(esf_url))
-
-                # yield scrapy.Request(url=newhouse_url,callback=self.parse_newhouse,meta={'info':(province,city)})
+                # 已经得到了省份和城市的信息，传递
+                yield scrapy.Request(url=newhouse_url,callback=self.parse_newhouse,meta={'info':(province,city)})
                 yield scrapy.Request(url=esf_url,callback=self.parse_esf,meta={'info':(province,city)})
 
 
@@ -69,6 +72,7 @@ class SfwSpider(RedisSpider):
 
         next_url = response.xpath("//div[@class='page']//a[@class='next']/@href").get()
         if next_url:
+            # join到newhouse_url
             yield scrapy.Request(url=response.urljoin(next_url),callback=self.parse_newhouse,meta={'info':(province,city)})
 
 
